@@ -3,55 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SP Intro Test</title>
+  <title>SP Intro</title>
   <style>
-    body {
+    html, body {
       margin: 0;
-      height: 100vh;
-      background: black;
+      padding: 0;
+      height: 100%;
       overflow: hidden;
+      background: radial-gradient(circle at center, #000 0%, #050505 100%);
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      color: red;
+      flex-direction: column;
+      color: #e50914;
       font-family: 'Arial Black', sans-serif;
     }
 
-    h1 {
-      font-size: 15vw;
-      font-weight: 900;
-      text-shadow: 0 0 40px red, 0 0 80px crimson;
-      opacity: 0;
-      animation: zoomOut 3s ease-out forwards;
+    svg {
+      width: 50vw;
+      height: auto;
+      fill: none;
+      stroke: #e50914;
+      stroke-width: 10;
+      stroke-linecap: round;
+      filter: drop-shadow(0 0 25px #e50914);
     }
 
-    @keyframes zoomOut {
-      0% {
-        transform: scale(4);
-        opacity: 0;
-        filter: blur(10px);
-      }
-      50% {
-        opacity: 1;
-        filter: blur(0);
-      }
-      100% {
-        transform: scale(1);
-        opacity: 1;
-        filter: blur(0);
-      }
+    .fade-out {
+      animation: fadeOut 1s forwards;
+    }
+
+    @keyframes fadeOut {
+      to { opacity: 0; transform: scale(0.9); }
     }
 
     .personas {
       display: none;
       opacity: 0;
-      margin-top: 2rem;
-      animation: fadeIn 2s forwards;
+      animation: fadeIn 1.5s forwards;
     }
 
     @keyframes fadeIn {
-      to { opacity: 1; }
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .persona-grid {
@@ -59,11 +53,12 @@
       gap: 2rem;
       justify-content: center;
       flex-wrap: wrap;
+      margin-top: 2rem;
     }
 
     .persona {
       background: #111;
-      border: 2px solid red;
+      border: 2px solid #e50914;
       border-radius: 12px;
       color: white;
       padding: 2rem;
@@ -74,18 +69,79 @@
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      transition: transform 0.3s, box-shadow 0.3s;
+      transition: all 0.3s;
+      box-shadow: 0 0 10px #e50914aa;
     }
 
     .persona:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 20px red;
+      transform: scale(1.08);
+      box-shadow: 0 0 25px #e50914;
+      background: #1a1a1a;
     }
   </style>
 </head>
 <body>
-  <h1 id="title">SP</h1>
+  <!-- SVG Animation for S and P -->
+  <svg id="spLogo" viewBox="0 0 400 200">
+    <path id="S" d="M120,40 
+                     C60,40 60,110 120,110 
+                     C180,110 180,180 120,180" 
+          stroke-dasharray="400" 
+          stroke-dashoffset="400">
+    </path>
+    <path id="P" d="M250,180 L250,40 
+                     C330,40 330,110 250,110" 
+          stroke-dasharray="400" 
+          stroke-dashoffset="400">
+    </path>
+  </svg>
 
+  <!-- Persona Grid -->
   <div class="personas" id="personas">
     <div class="persona-grid">
-      <di
+      <div class="persona" id="work">Work</div>
+      <div class="persona" id="play">Play</div>
+      <div class="persona" id="live">Live</div>
+      <div class="persona" id="dream">Dream</div>
+    </div>
+  </div>
+
+  <script>
+    // Animate strokes for S and P
+    const sPath = document.getElementById('S');
+    const pPath = document.getElementById('P');
+    const logo = document.getElementById('spLogo');
+    const personas = document.getElementById('personas');
+
+    function animatePath(path, delay) {
+      setTimeout(() => {
+        path.animate([
+          { strokeDashoffset: 400 },
+          { strokeDashoffset: 0 }
+        ], { duration: 1200, fill: 'forwards', easing: 'ease-in-out' });
+      }, delay);
+    }
+
+    // Sequence: Draw S, then P
+    animatePath(sPath, 200);
+    animatePath(pPath, 1600);
+
+    // Fade out logo, show personas
+    setTimeout(() => {
+      logo.classList.add('fade-out');
+      setTimeout(() => {
+        logo.style.display = 'none';
+        personas.style.display = 'block';
+        personas.style.opacity = '1';
+      }, 1000);
+    }, 3200);
+
+    // Click actions (we'll update these next)
+    document.querySelectorAll('.persona').forEach(box => {
+      box.addEventListener('click', () => {
+        alert('You clicked ' + box.textContent + '! (We’ll add pages next)');
+      });
+    });
+  </script>
+</body>
+</html>
