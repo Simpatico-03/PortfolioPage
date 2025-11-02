@@ -1,135 +1,342 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simran’s Portfolio</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Simran Pattanaik — Portfolio</title>
+<style>
+  :root{
+    --bg:#050505;
+    --panel:#0f0f0f;
+    --accent:#e50914; /* Netflix red */
+    --muted:#bdbdbd;
+    --card-radius:10px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+    background: radial-gradient(1200px 600px at 10% 10%, rgba(255,255,255,0.02), transparent),
+                radial-gradient(1000px 500px at 90% 90%, rgba(255,255,255,0.01), transparent),
+                var(--bg);
+    color:#fff;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    overflow-x:hidden;
+  }
 
-    body {
-      background-color: #000;
-      color: white;
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+  /* cinematic vignette overlay */
+  .vignette {
+    position:fixed; inset:0; pointer-events:none;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 45%, rgba(0,0,0,0.65) 100%);
+    mix-blend-mode:multiply;
+    z-index:5;
+  }
 
-    /* --- INTRO ANIMATION --- */
-    .intro {
-      position: absolute;
-      font-size: 8rem;
-      color: red;
-      font-weight: bold;
-      animation: zoomOut 3s ease forwards;
-    }
+  /* ---------- Intro splash ---------- */
+  .splash {
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:10;
+    background:linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.4));
+  }
 
-    @keyframes zoomOut {
-      0% {
-        transform: scale(0);
-        opacity: 0;
-      }
-      40% {
-        transform: scale(3);
-        opacity: 1;
-      }
-      100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-    }
+  .splash-title{
+    font-weight:800;
+    color:var(--accent);
+    font-size:10vw; /* responsive */
+    line-height:0.9;
+    text-align:center;
+    letter-spacing: -2px;
+    transform-origin:center center;
+    /* glow & slight blur for cinematic look */
+    text-shadow:
+      0 6px 30px rgba(229,9,20,0.25),
+      0 2px 8px rgba(229,9,20,0.12),
+      0 1px 1px rgba(0,0,0,0.6);
+    filter: drop-shadow(0 12px 40px rgba(229,9,20,0.12));
+    animation: introZoom 3s cubic-bezier(.2,.9,.3,1) forwards;
+    -webkit-font-smoothing:antialiased;
+  }
 
-    /* --- PERSONA PAGE --- */
-    .personas {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      animation: fadeIn 1.5s ease forwards;
+  @keyframes introZoom{
+    0%{
+      transform: scale(6);
+      opacity:1;
+      filter: blur(2px);
     }
+    70%{
+      transform: scale(1.05);
+      opacity:1;
+      filter: blur(0.6px);
+    }
+    100%{
+      transform: scale(1);
+      opacity:1;
+      filter: blur(0);
+    }
+  }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+  /* container for the main app (hidden while splash runs) */
+  .app {
+    opacity:0;
+    transform: translateY(10px);
+    transition: opacity .6s ease, transform .6s ease;
+    padding:30px 30px 80px;
+    min-height:100vh;
+  }
+  .app.visible{
+    opacity:1; transform: translateY(0);
+  }
 
-    h2 {
-      margin-bottom: 30px;
-      font-size: 2rem;
-    }
+  /* header */
+  header.site-header{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px; padding:8px 6px;
+  }
+  .logo{
+    font-weight:700; font-size:18px; color:var(--accent);
+  }
+  .subtle{
+    color:var(--muted); font-size:14px;
+  }
 
-    .persona-list {
-      display: flex;
-      gap: 40px;
-    }
+  /* personas grid (like profile selector) */
+  .personas {
+    margin-top:40px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:28px;
+    flex-wrap:wrap;
+  }
 
-    .persona {
-      text-align: center;
-      cursor: pointer;
-    }
+  .persona-card{
+    width:150px;
+    text-align:center;
+    cursor:pointer;
+    transition: transform .22s ease, box-shadow .22s ease;
+  }
+  .persona-thumb{
+    width:150px;
+    height:150px;
+    border-radius:12px;
+    overflow:hidden;
+    background:linear-gradient(180deg,#111,#0a0a0a);
+    border:2px solid rgba(255,255,255,0.04);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  }
+  .persona-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
 
-    .persona img {
-      width: 120px;
-      height: 120px;
-      border-radius: 10px;
-      transition: all 0.3s ease;
-      border: 2px solid transparent;
-    }
+  .persona-card:hover{ transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
+  .persona-label{ margin-top:10px; color:#f3f3f3; font-weight:600; letter-spacing:0.2px; }
 
-    .persona img:hover {
-      transform: scale(1.1);
-      border-color: red;
-    }
+  /* content area with rows (hidden initially) */
+  .content {
+    margin-top:36px;
+    display:none;
+    flex-direction:column;
+    gap:34px;
+  }
+  .content.visible{ display:flex; }
 
-    .persona span {
-      display: block;
-      margin-top: 10px;
-      font-size: 1.1rem;
-      color: #ddd;
-    }
-  </style>
+  .section-title{
+    font-size:20px; margin:8px 0; color:#fff;
+    display:flex; align-items:center; gap:12px;
+  }
+  .row{
+    display:flex;
+    gap:14px;
+    overflow-x:auto;
+    padding-bottom:8px;
+    scrollbar-width:none; -ms-overflow-style:none;
+  }
+  .row::-webkit-scrollbar{ display:none; }
+
+  .tile{
+    min-width:200px;
+    width:200px;
+    border-radius:8px;
+    background:#111;
+    overflow:hidden;
+    flex:0 0 auto;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+    transition: transform .18s ease;
+    cursor:pointer;
+  }
+  .tile img{ width:100%; height:120px; object-fit:cover; display:block; }
+  .tile .meta{ padding:10px; color:var(--muted); font-size:14px; }
+  .tile:hover{ transform: translateY(-8px) scale(1.02); }
+
+  /* small screens */
+  @media (max-width:640px){
+    .splash-title{ font-size:16vw; }
+    .persona-card{ width:110px; }
+    .persona-thumb{ width:110px; height:110px; border-radius:10px; }
+    .tile{ min-width:150px; width:150px; }
+  }
+</style>
 </head>
 <body>
-  <div class="intro" id="intro">Simran</div>
+  <!-- cinematic splash -->
+  <div class="splash" id="splash">
+    <div class="splash-title" id="splashTitle">Simran Pattanaik</div>
+  </div>
 
-  <div class="personas" id="personas">
-    <h2>Choose your view</h2>
-    <div class="persona-list">
-      <div class="persona">
-        <img src="https://i.imgur.com/VgG5Z9u.png" alt="Explorer">
-        <span>The Explorer</span>
+  <div class="vignette"></div>
+
+  <!-- main app -->
+  <div class="app" id="app">
+    <header class="site-header">
+      <div class="logo">SimFlix — Portfolio</div>
+      <div class="subtle">Choose a perspective</div>
+    </header>
+
+    <!-- persona selector -->
+    <div class="personas" id="personas">
+      <div class="persona-card" data-persona="work">
+        <div class="persona-thumb">
+          <!-- replace placeholder below with your image -->
+          <img src="https://source.unsplash.com/collection/190727/300x300" alt="Work thumbnail">
+        </div>
+        <div class="persona-label">Work</div>
       </div>
-      <div class="persona">
-        <img src="https://i.imgur.com/jzvYHKi.png" alt="Maker">
-        <span>The Maker</span>
+
+      <div class="persona-card" data-persona="play">
+        <div class="persona-thumb">
+          <img src="https://source.unsplash.com/collection/895539/300x300" alt="Play thumbnail">
+        </div>
+        <div class="persona-label">Play</div>
       </div>
-      <div class="persona">
-        <img src="https://i.imgur.com/J3bGZsE.png" alt="Human">
-        <span>The Human</span>
+
+      <div class="persona-card" data-persona="live">
+        <div class="persona-thumb">
+          <img src="https://source.unsplash.com/collection/8881465/300x300" alt="Live thumbnail">
+        </div>
+        <div class="persona-label">Live</div>
       </div>
-      <div class="persona">
-        <img src="https://i.imgur.com/LWW9WAt.png" alt="Dreamer">
-        <span>The Dreamer</span>
+
+      <div class="persona-card" data-persona="dream">
+        <div class="persona-thumb">
+          <img src="https://source.unsplash.com/collection/1127163/300x300" alt="Dream thumbnail">
+        </div>
+        <div class="persona-label">Dream</div>
+      </div>
+    </div>
+
+    <!-- content sections (one per persona) -->
+    <div class="content" id="contentArea">
+      <!-- Work -->
+      <div class="persona-section" id="workSection" data-section-for="work">
+        <div class="section-title">Work — Projects & Case Studies</div>
+        <div class="row" id="workRow">
+          <!-- tiles -->
+          <div class="tile"><img src="https://source.unsplash.com/featured/?code,app" alt=""><div class="meta">Project: Dashboard</div></div>
+          <div class="tile"><img src="https://source.unsplash.com/featured/?data,analytics" alt=""><div class="meta">Case Study: Analytics</div></div>
+          <div class="tile"><img src="https://source.unsplash.com/featured/?ux,design" alt=""><div class="meta">UX Project</div></div>
+          <div class="tile"><img src="https://source.unsplash.com/featured/?work,office" alt=""><div class="meta">Team Project</div></div>
+        </div>
+      </div>
+
+      <!-- Play -->
+      <div class="persona-section" id="playSection" data-section-for="play">
+        <div class="section-title">Play — Side Projects & Fun</div>
+        <div class="row" id="playRow">
+          <div class="tile"><img src="https://source.unsplash.com/featured/?photography" alt=""><div class="meta">Photography</div></div>
+          <div class="tile"><img src="https://source.unsplash.com/featured/?game,indie" alt=""><div class="meta">Game Jam</div></div>
+          <div class="tile"><img src="https://source.unsplash.com/featured/?music,art" alt=""><div class="meta">Music Collab</div></div>
+          <div class="tile"><img src="https://source.unsplash.com/featured/?crafts" alt=""><div class="meta">DIY Project</div></div>
+        </div>
+      </div>
+
+      <!-- Live -->
+      <div class="persona-section" id="liveSection" data-section-for="live">
+        <div class="section-title">Live — Travel & Life</div>
+        <div class="row" id="liveRow">
+          <div class="tile"><img src="https://source.unsplash.com/featured/?travel" alt=""><div class="meta">Trip: Japan</div></div>
+          <div class="tile"><img src="https://source.unsplash.com/featured/?food" alt=""><div class="meta">Food & Recipes</div></div>
+          <div class="tile"><img src="https://source.unsplash.com/featured/?family" alt=""><div class="meta">Moments & Milestones</div></div>
+          <div class="tile"><img src="https://source.unsplash.com/featured/?city,street" alt=""><div class="meta">City Life</div></div>
+        </div>
+      </div>
+
+      <!-- Dream -->
+      <div class="persona-section" id="dreamSection" data-section-for="dream">
+        <div class="section-title">Dream — Visual Experiments</div>
+        <div class="row" id="dreamRow">
+          <div class="tile"><img src="https://source.unsplash.com/featured/?art,abstract" alt=""><div class="meta">Moodboard</div></div>
+          <div class="tile"><img src="https://source.unsplash.com/featured/?illustration" alt=""><div class="meta">Illustrations</div></div>
+          <div class="tile"><img src="https://source.unsplash.com/featured/?typography" alt=""><div class="meta">Typography</div></div>
+          <div class="tile"><img src="https://source.unsplash.com/featured/?color,palette" alt=""><div class="meta">Color Studies</div></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <script>
-    // Wait for animation to finish, then show personas
+<script>
+  // after the 3s cinematic animation, hide splash & reveal app
+  const splashDuration = 3000; // 3 seconds
+  window.addEventListener('load', () => {
     setTimeout(() => {
-      document.getElementById('intro').style.display = 'none';
+      const splash = document.getElementById('splash');
+      splash.style.transition = 'opacity .6s ease';
+      splash.style.opacity = 0;
+      setTimeout(()=> splash.style.display = 'none', 650);
+
+      const app = document.getElementById('app');
+      app.classList.add('visible');
+
+      // reveal persona area after a small delay for cinematic feel
       const personas = document.getElementById('personas');
-      personas.style.display = 'flex';
-    }, 3000); // matches zoomOut animation duration
-  </script>
+      personas.style.opacity = 0;
+      personas.style.transition = 'opacity .5s ease';
+      setTimeout(()=> personas.style.opacity = 1, 200);
+    }, splashDuration);
+  });
+
+  // persona click logic
+  const personaCards = document.querySelectorAll('.persona-card');
+  const contentArea = document.getElementById('contentArea');
+  const personaSections = document.querySelectorAll('.persona-section');
+
+  function hideAllSections(){
+    personaSections.forEach(s => s.style.display = 'none');
+  }
+
+  personaCards.forEach(card => {
+    card.addEventListener('click', (e) => {
+      const persona = card.getAttribute('data-persona'); // work/play/live/dream
+      // reveal content area if hidden
+      contentArea.classList.add('visible');
+      // hide all then show selected
+      hideAllSections();
+      const target = document.querySelector(`.persona-section[data-section-for="${persona}"]`);
+      if(target){
+        target.style.display = 'block';
+        target.scrollIntoView({behavior:'smooth', block:'start'});
+      }
+      // soft focus highlight effect on selected persona (optional)
+      personaCards.forEach(c => c.style.opacity = c === card ? '1' : '0.45');
+      // scroll page a bit to show rows clearly on short screens
+      setTimeout(()=> {
+        window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 70, behavior:'smooth' });
+      }, 250);
+    });
+  });
+
+  // keyboard: press 1-4 to open personas quickly
+  window.addEventListener('keydown', (e) => {
+    const keyMap = { '1':'work','2':'play','3':'live','4':'dream' };
+    if(keyMap[e.key]){
+      const card = document.querySelector(`.persona-card[data-persona="${keyMap[e.key]}"]`);
+      card && card.click();
+    }
+  });
+</script>
 </body>
 </html>
-
