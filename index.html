@@ -1,48 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Simran’s Portfolio — SimFlix</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simran’s Portfolio</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #000;
+      color: white;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* --- INTRO ANIMATION --- */
+    .intro {
+      position: absolute;
+      font-size: 8rem;
+      color: red;
+      font-weight: bold;
+      animation: zoomOut 3s ease forwards;
+    }
+
+    @keyframes zoomOut {
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+      40% {
+        transform: scale(3);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* --- PERSONA PAGE --- */
+    .personas {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      animation: fadeIn 1.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    h2 {
+      margin-bottom: 30px;
+      font-size: 2rem;
+    }
+
+    .persona-list {
+      display: flex;
+      gap: 40px;
+    }
+
+    .persona {
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .persona img {
+      width: 120px;
+      height: 120px;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .persona img:hover {
+      transform: scale(1.1);
+      border-color: red;
+    }
+
+    .persona span {
+      display: block;
+      margin-top: 10px;
+      font-size: 1.1rem;
+      color: #ddd;
+    }
+  </style>
 </head>
 <body>
-  <header class="navbar">
-    <div class="logo">SimFlix 🎬</div>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#">Projects</a>
-      <a href="#">Contact</a>
-    </nav>
-  </header>
+  <div class="intro" id="intro">Simran</div>
 
-  <main>
-    <section class="hero">
-      <h1>Welcome to SimFlix</h1>
-      <p>My projects — browse like a streaming catalog.</p>
-    </section>
-
-    <section class="gallery">
-      <h2>Projects</h2>
-      <div class="row">
-        <div class="card">
-          <img src="https://placehold.co/300x170" alt="Project 1">
-          <p>Project 1</p>
-        </div>
-        <div class="card">
-          <img src="https://placehold.co/300x170" alt="Project 2">
-          <p>Project 2</p>
-        </div>
-        <div class="card">
-          <img src="https://placehold.co/300x170" alt="Project 3">
-          <p>Project 3</p>
-        </div>
+  <div class="personas" id="personas">
+    <h2>Choose your view</h2>
+    <div class="persona-list">
+      <div class="persona">
+        <img src="https://i.imgur.com/VgG5Z9u.png" alt="Explorer">
+        <span>The Explorer</span>
       </div>
-    </section>
-  </main>
+      <div class="persona">
+        <img src="https://i.imgur.com/jzvYHKi.png" alt="Maker">
+        <span>The Maker</span>
+      </div>
+      <div class="persona">
+        <img src="https://i.imgur.com/J3bGZsE.png" alt="Human">
+        <span>The Human</span>
+      </div>
+      <div class="persona">
+        <img src="https://i.imgur.com/LWW9WAt.png" alt="Dreamer">
+        <span>The Dreamer</span>
+      </div>
+    </div>
+  </div>
 
-  <footer>
-    <p>© 2025 Simran Pattanaik</p>
-  </footer>
+  <script>
+    // Wait for animation to finish, then show personas
+    setTimeout(() => {
+      document.getElementById('intro').style.display = 'none';
+      const personas = document.getElementById('personas');
+      personas.style.display = 'flex';
+    }, 3000); // matches zoomOut animation duration
+  </script>
 </body>
 </html>
+
