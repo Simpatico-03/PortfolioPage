@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SP Intro</title>
+  <title>SP Intro Test</title>
   <style>
     body {
       margin: 0;
       height: 100vh;
-      background: radial-gradient(circle at center, #000 0%, #060606 100%);
+      background: black;
       overflow: hidden;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
       color: red;
       font-family: 'Arial Black', sans-serif;
     }
@@ -51,9 +51,7 @@
     }
 
     @keyframes fadeIn {
-      to {
-        opacity: 1;
-      }
+      to { opacity: 1; }
     }
 
     .persona-grid {
@@ -70,3 +68,24 @@
       color: white;
       padding: 2rem;
       width: 150px;
+      height: 150px;
+      font-size: 1.2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .persona:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px red;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="title">SP</h1>
+
+  <div class="personas" id="personas">
+    <div class="persona-grid">
+      <di
